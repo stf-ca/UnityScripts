@@ -16,7 +16,7 @@ A repository for various of my Unity Scripts. Simply for archive/portfolio purpo
 ![image](https://github.com/user-attachments/assets/9d9a8250-b9dd-4889-9546-e852ab880340)
 ![image](https://github.com/user-attachments/assets/b64a07be-efbf-4994-b259-729ef766383a)
 ![image](https://github.com/user-attachments/assets/14940615-b0ce-4297-b0b7-541a96a8cba5)
-- Images: Duplicated Object and Children, Organized Save Folders, Applied Duplicated Material
+- Images: Duplicated Object and Children, Organized Save Folders, Applied Duplicated Material on Nested Object
 
 - This tool is extremely useful for developers who wish to create modified copies of objects (eg. with small variations) without having to search through their folders to find the materials or dealing with a huge amount of materials. For example, this reduces the time to develop a "series" of VRChat avatars that have small variations between each other by magnitudes. Or, for map builders, new "buildings" with different textures can be created and have their materials edited directly without impacting the previous buildings.
 ![image](https://github.com/user-attachments/assets/ffed8cd0-a10c-4bf4-ab10-b91be4361607)

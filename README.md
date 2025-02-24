@@ -7,6 +7,7 @@ A repository for various of my Unity Scripts. Simply for archive/portfolio purpo
  - Creates a window which shows extra details about the selected item (heirarchy or project files). It will access the item's meshed objects and skinned meshes, aswell as any nested objects (if in heirarchy) and add them as rows. Then, there are columns that count triangles (polygons), materials, textures and blendshapes if applicable. Finally, it will show the total size of the object after crunch compression (estimated calculation)
 - The utility will also count totals for the selected item, for example, if a VRChat avatar is selected, it will display the total polygons, materials, textures, blendshapes and texture memory size. If an item is clicked it will select it in the heirarchy for quick navigation.
 ![Unity_DmrweObGOu](https://github.com/user-attachments/assets/2d3e5ec0-4f34-4aba-b5ef-a155d9f35243)
+- Image: Tool
 
 **BTPhotoCopy**
 - Utility designed to create carbon copies of selected gameobjects with reset references
@@ -15,10 +16,11 @@ A repository for various of my Unity Scripts. Simply for archive/portfolio purpo
 ![image](https://github.com/user-attachments/assets/9d9a8250-b9dd-4889-9546-e852ab880340)
 ![image](https://github.com/user-attachments/assets/b64a07be-efbf-4994-b259-729ef766383a)
 ![image](https://github.com/user-attachments/assets/14940615-b0ce-4297-b0b7-541a96a8cba5)
-
+- Images: Duplicated Object and Children, Organized Save Folders, Applied Duplicated Material
 
 - This tool is extremely useful for developers who wish to create modified copies of objects (eg. with small variations) without having to search through their folders to find the materials or dealing with a huge amount of materials. For example, this reduces the time to develop a "series" of VRChat avatars that have small variations between each other by magnitudes. Or, for map builders, new "buildings" with different textures can be created and have their materials edited directly without impacting the previous buildings.
 ![image](https://github.com/user-attachments/assets/ffed8cd0-a10c-4bf4-ab10-b91be4361607)
+- Image: Tool
 
 
 

@@ -11,7 +11,7 @@ namespace rd.BTUtility // ---------- rd'
 {
     public class BTPolyCounterWindow : EditorWindow
     {
-        [MenuItem("Tools/BTUtility")]
+        [MenuItem("Tools/bt/BTUtility")]
         public static void ShowWindow()
         {
             GetWindow<BTPolyCounterWindow>("BT GameObj Utility");

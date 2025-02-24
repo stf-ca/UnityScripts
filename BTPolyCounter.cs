@@ -264,8 +264,8 @@ namespace rd.BTUtility // ---------- rd'
             GUILayout.Label($"Total Materials: {totalMaterials}");
             GUILayout.Label($"Total Textures: {totalTextures}");
             GUILayout.Label($"Total BlendShapes: {totalBlendShapes}");
-            GUILayout.Label($"Total Disk Size: {(totalMemorySize / (1024.0f * 1024.0f)):F2} MB");
-            GUILayout.Label($"https:// - Disk size is approximate."); //---------- rd'
+            GUILayout.Label($"Total Memory Size: {(totalMemorySize / (1024.0f * 1024.0f)):F2} MB");
+            GUILayout.Label($"https:// - Memory size is approximate."); //---------- rd'
         }
 
         private class AnalyzedObject

@@ -2,16 +2,15 @@
 using System.Collections.Generic;
 using UnityEditor;
 using UnityEngine;
-using System.Collections.Generic;
 using System.Linq;
 
-// copyright 2025 ---------- rd'
+// copyright 2025 ---------- stf
 
-namespace rd.BTUtility // ---------- rd'
+namespace rd.BTUtility
 {
     public class BTPolyCounterWindow : EditorWindow
     {
-        [MenuItem("Tools/bt/BTUtility")]
+        [MenuItem("Tools/rd/BTUtility")]
         public static void ShowWindow()
         {
             GetWindow<BTPolyCounterWindow>("BT GameObj Utility");
@@ -24,10 +23,19 @@ namespace rd.BTUtility // ---------- rd'
         private int selectedSortOption = 1;
         private bool hideZeroSizeItems = true;
 
+        private static string version = "1.3.1";
+        private static string versiondet = "release";
+
+        private GUIContent discordButton = null;
+        private GUIContent webButton = null;
+        private static string discordURL = "https://discord.rd.art/";
+        private static string webURL = "https://rd.art/";
+
         private void OnGUI()
         {
-            GUILayout.Label("- GameObject Statistics - https:// -", EditorStyles.boldLabel); //---------- rd'
+            GUILayout.Label("- BT GameObject Statistics - https://rd.art - " + version + " " + versiondet, EditorStyles.boldLabel);
 
+            // selection auto-update (validation)
             if (Selection.activeGameObject != previousSelection)
             {
                 previousSelection = Selection.activeGameObject;
@@ -36,20 +44,24 @@ namespace rd.BTUtility // ---------- rd'
                     AnalyzeSelectedGameObject();
                 }
             }
+            // -=-=
 
             selectedSortOption = EditorGUILayout.Popup("Sort by", selectedSortOption, sortOptions);
             hideZeroSizeItems = EditorGUILayout.Toggle("Hide Zero Size Items", hideZeroSizeItems);
 
+            // pick
             if (analyzedObjects != null && analyzedObjects.Count > 0)
             {
                 SortAnalyzedObjects();
                 DisplayResults();
                 DisplaySummary();
             }
+            // -=-=
         }
 
         private void DisplayResults()
         {
+            // gui ui
             EditorGUILayout.Space();
             scrollPos = EditorGUILayout.BeginScrollView(scrollPos);
             string namelabel = "Please select a GameObject";
@@ -64,7 +76,9 @@ namespace rd.BTUtility // ---------- rd'
             DrawColumnHeader("BlendShapes", 100);
             DrawColumnHeader("Disk Size (MB)", 130);
             EditorGUILayout.EndHorizontal();
+            // -=-=
 
+            // populate
             bool isGray = false;
             foreach (var obj in analyzedObjects)
             {
@@ -83,13 +97,14 @@ namespace rd.BTUtility // ---------- rd'
                 GUILayout.Label(obj.materialCount.ToString(), GUILayout.Width(70));
                 GUILayout.Label(obj.textureCount.ToString(), GUILayout.Width(70));
                 GUILayout.Label(obj.blendShapeCount.ToString(), GUILayout.Width(100));
-                GUILayout.Label((obj.memorySize / (1024.0f * 1024.0f)).ToString("F2"), GUILayout.Width(130)); // Convert to MB
+                GUILayout.Label((obj.memorySize / (1024.0f * 1024.0f)).ToString("F2"), GUILayout.Width(130)); // convert to MB
 
                 EditorGUILayout.EndHorizontal();
                 isGray = !isGray;
             }
             GUI.backgroundColor = Color.white;
             EditorGUILayout.EndScrollView();
+            // -=-=
         }
 
         private void DrawColumnHeader(string name, float width)
@@ -101,6 +116,7 @@ namespace rd.BTUtility // ---------- rd'
             GUILayout.Label(name, headerStyle, GUILayout.Width(width));
         }
 
+        // selection validation stage 2
         private void AnalyzeSelectedGameObject()
         {
             GameObject selected = Selection.activeGameObject;
@@ -123,6 +139,7 @@ namespace rd.BTUtility // ---------- rd'
             long meshMemorySize = 0;
             long textureMemorySize = 0;
 
+            // collect information pre-mem
             MeshFilter meshFilter = gameObject.GetComponent<MeshFilter>();
             if (meshFilter != null)
             {
@@ -150,6 +167,7 @@ namespace rd.BTUtility // ---------- rd'
                 memorySize = meshMemorySize,
                 reference = gameObject
             };
+            // -=-=
 
             if (renderer != null)
             {
@@ -184,6 +202,7 @@ namespace rd.BTUtility // ---------- rd'
             }
         }
 
+        // mesh estimation
         private long CalculateMeshMemorySize(Mesh mesh)
         {
             if (mesh == null)
@@ -191,11 +210,12 @@ namespace rd.BTUtility // ---------- rd'
                 return 0;
             }
             long size = 0;
-            size += mesh.vertexCount * 12; // estimated, as each vertex is a Vector3 (~12 bytes)
-            size += mesh.triangles.Length * 2; // for triangle indices (2 bytes each in 16 bit)
+            size += mesh.vertexCount * 12; // estimated, as each vertex = Vector3 (~12 bytes)
+            size += mesh.triangles.Length * 2; // for triangle indices (2 bytes / 16 bit)
             return size;
         }
 
+        // texture estimation
         private long CalculateTextureMemorySize(Texture texture)
         {
             if (texture == null)
@@ -203,20 +223,19 @@ namespace rd.BTUtility // ---------- rd'
                 return 0;
             }
 
-            // use an alternative approximation for texture size.
             int width = texture.width;
             int height = texture.height;
 
-            // typical format to estimate
             return ApproximateCompressedSize(width, height, true);
         }
 
+        // basic heuristic approximation
         private long ApproximateCompressedSize(int width, int height, bool applyCompression)
         {
-            // basic heuristic approximation
             return (applyCompression) ? (long)(width * height * 0.5) : (long)(width * height * 4);
         }
 
+        // types of sort
         private void SortAnalyzedObjects()
         {
             switch (selectedSortOption)
@@ -244,6 +263,7 @@ namespace rd.BTUtility // ---------- rd'
             }
         }
 
+        // footer
         private void DisplaySummary()
         {
             if (analyzedObjects == null || analyzedObjects.Count == 0)
@@ -265,7 +285,24 @@ namespace rd.BTUtility // ---------- rd'
             GUILayout.Label($"Total Textures: {totalTextures}");
             GUILayout.Label($"Total BlendShapes: {totalBlendShapes}");
             GUILayout.Label($"Total Memory Size: {(totalMemorySize / (1024.0f * 1024.0f)):F2} MB");
-            GUILayout.Label($"https:// - Memory size is approximate."); //---------- rd'
+            GUILayout.Label($"https://rd.art - Memory size is approximate.");
+
+            // buttons
+            discordButton = new GUIContent(" Join Discord", EditorGUIUtility.IconContent("BuildSettings.Web.Small").image);
+            webButton = new GUIContent(" Open Website", EditorGUIUtility.IconContent("BuildSettings.Web.Small").image);
+            GUILayout.BeginHorizontal( GUILayout.ExpandWidth( true ) );
+			{
+                if (GUILayout.Button(discordButton, GUILayout.ExpandWidth(true)))
+                {
+                    Application.OpenURL(discordURL);
+                }
+                if (GUILayout.Button(webButton, GUILayout.ExpandWidth(true)))
+                {
+                    Application.OpenURL(webURL);
+                }
+            }
+            GUILayout.EndHorizontal();
+            // -=-=
         }
 
         private class AnalyzedObject

@@ -7,7 +7,7 @@ using System.IO;
 
 // copyright 2025 ---------- rd'
 
-namespace rd.BTUtility // ---------- rd'
+namespace rd.BTUtility
 {
     public class BTObjectPhotocopy : EditorWindow
     {
@@ -26,7 +26,15 @@ namespace rd.BTUtility // ---------- rd'
         private bool encounteredError = false;
         private GameObject lastSelectedObject = null;
 
-        [MenuItem("Tools/bt/BTObjectPhotocopy")]  //---------- rd'
+        private string version = "1.2.0";
+        private string versiondet = "alpha";
+        
+        private GUIContent discordButton = null;
+        private GUIContent webButton = null;
+        private static string discordURL = "https://discord.rd.art/";
+        private static string webURL = "https://rd.art/";
+
+        [MenuItem("Tools/rd/BTObjectPhotocopy")]
         static void Init()
         {
             BTObjectPhotocopy window = (BTObjectPhotocopy)EditorWindow.GetWindow(typeof(BTObjectPhotocopy));
@@ -36,9 +44,10 @@ namespace rd.BTUtility // ---------- rd'
 
         void OnGUI()
         {
-            GUILayout.Label("BT Object Photocopy - https://", EditorStyles.boldLabel); //---------- rd'
+            GUILayout.Label("- BT Object Photocopy - https://rd.art - " + version + " " + versiondet, EditorStyles.boldLabel);
             EditorGUILayout.HelpBox("Unlock all locked textures before proceeding.", MessageType.Warning);
 
+            // selection auto-update
             EditorGUI.BeginChangeCheck();
             selectedObject = (GameObject)EditorGUILayout.ObjectField("Selected Object", selectedObject, typeof(GameObject), true);
             if (EditorGUI.EndChangeCheck())
@@ -46,15 +55,15 @@ namespace rd.BTUtility // ---------- rd'
                 Selection.activeObject = selectedObject;
                 lastSelectedObject = selectedObject;
             }
-
-            // auto-update
             if (Selection.activeGameObject != lastSelectedObject)
             {
                 selectedObject = Selection.activeGameObject;
                 lastSelectedObject = selectedObject;
                 Repaint();
             }
+            // -=-=
 
+            // gui
             GUILayout.Label("Naming", EditorStyles.boldLabel);
             mainFolderName = EditorGUILayout.TextField("Main Folder Name", mainFolderName);
             itemSuffix = EditorGUILayout.TextField("Item Suffix", itemSuffix);
@@ -68,7 +77,9 @@ namespace rd.BTUtility // ---------- rd'
             GUILayout.BeginHorizontal(); GUILayout.Space(50); copyScripts = EditorGUILayout.Toggle("Copy Scripts", copyScripts); GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal(); GUILayout.Space(50); moveAside = EditorGUILayout.Toggle("Move Aside", moveAside); GUILayout.EndHorizontal();
             GUILayout.BeginHorizontal(); GUILayout.Space(50); backupScene = EditorGUILayout.Toggle("Backup Scene", backupScene); GUILayout.EndHorizontal();
+            // -=-=
 
+            // photocopy dupe
             if (GUILayout.Button("Photocopy Object"))
             {
                 if (CheckForExistingCopy())
@@ -86,13 +97,14 @@ namespace rd.BTUtility // ---------- rd'
                 PhotocopyObject();
                 copyCompleted = true;
             }
+            // -=-=
 
             if (copyCompleted)
             {
                 EditorGUILayout.HelpBox("Photocopy completed successfully!", MessageType.Info);
             }
 
-            // progress bar
+            // progress bar (wip)
             Rect progressRect = new Rect(3, GUILayoutUtility.GetLastRect().yMax + 5, position.width - 6, 20);
             Color originalColor = GUI.color;
             if (encounteredError) GUI.color = Color.red;
@@ -104,6 +116,7 @@ namespace rd.BTUtility // ---------- rd'
             EditorGUI.ProgressBar(progressRect, progress, progressMessage);
             GUI.color = originalColor;
             GUILayout.Space(25);
+            // -=-=
 
             // cleanup
             if (GUILayout.Button("Cleanup Photocopies"))
@@ -117,8 +130,12 @@ namespace rd.BTUtility // ---------- rd'
                     CreateRequiredFolders();
                 }
             }
+            // -=-=
+
+            DisplaySummary();
         }
 
+        // folders; bug avoidance
         static void CreateRequiredFolders()
         {
             string[] requiredFolders = new[]
@@ -183,6 +200,7 @@ namespace rd.BTUtility // ---------- rd'
             Debug.Log("All photocopies and backups have been cleared.");
         }
 
+        // previous dupes
         private bool CheckForExistingCopy()
         {
             string potentialCopyName = $"{selectedObject.name}_Copy";
@@ -190,6 +208,7 @@ namespace rd.BTUtility // ---------- rd'
             return potentialCopy != null;
         }
 
+        // rename to keep old dupes
         private void RenameOldCopy()
         {
             string oldFolderPath = $"Assets/BT/ObjectPhotocopy/Copies/{mainFolderName}";
@@ -208,6 +227,7 @@ namespace rd.BTUtility // ---------- rd'
             }
         }
 
+        // dupe function
         private void PhotocopyObject()
         {
             if (selectedObject == null)
@@ -239,6 +259,7 @@ namespace rd.BTUtility // ---------- rd'
 
                 Dictionary<Material, Material> materialMap = new Dictionary<Material, Material>();
 
+                // transfer data
                 if (copyMaterials || copyTextures)
                 {
                     TraverseAndCopyComponents(selectedObject, duplicateObject, parentFolder, materialMap);
@@ -258,6 +279,7 @@ namespace rd.BTUtility // ---------- rd'
                 ValidateMaterialReplacement(duplicateObject, materialMap);
                 currentTask++;
                 UpdateProgress("Refreshing assets", currentTask / taskCount);
+                // -=-=
             }
             catch (System.Exception ex)
             {
@@ -273,6 +295,7 @@ namespace rd.BTUtility // ---------- rd'
             Repaint();
         }
 
+        // transfer of components
         private void TraverseAndCopyComponents(GameObject original, GameObject clone, string parentFolder, Dictionary<Material, Material> materialMap)
         {
             string materialsFolder = $"{parentFolder}/Materials";
@@ -320,7 +343,7 @@ namespace rd.BTUtility // ---------- rd'
                     }
                     catch (System.Exception ex)
                     {
-                        encounteredError = true;
+                        encounteredError = true; // call error
                         Debug.LogError($"Error copying material {mat.name}: {ex.Message}");
                         newMaterials[i] = mat; // fallback to OG mat
                     }
@@ -330,6 +353,7 @@ namespace rd.BTUtility // ---------- rd'
             }
         }
 
+        // copy texture items
         private void CopyTextures(Material originalMat, Material newMat, string texturesFolder)
         {
             foreach (string propertyName in originalMat.GetTexturePropertyNames())
@@ -362,6 +386,7 @@ namespace rd.BTUtility // ---------- rd'
             newMat.CopyPropertiesFromMaterial(originalMat);
         }
 
+        // ensure logic is transferred (deprecated)
         private void CopyLogicComponents(GameObject original, GameObject clone)
         {
             Component[] components = original.GetComponents<Component>();
@@ -376,6 +401,7 @@ namespace rd.BTUtility // ---------- rd'
             }
         }
 
+        // properties
         private void CopyComponentValues(Component original, Component copy)
         {
             var type = original.GetType();
@@ -399,6 +425,7 @@ namespace rd.BTUtility // ---------- rd'
             }
         }
 
+        // dupe old scene in case of error saving
         private void BackupCurrentScene()
         {
             string backupFolder = "Assets/BT/ObjectPhotocopy/SceneBackups";
@@ -427,6 +454,7 @@ namespace rd.BTUtility // ---------- rd'
             return backupPath;
         }
 
+        // folders; bug avoidance
         private void CreateFolderStructure(string parentFolder)
         {
             if (!AssetDatabase.IsValidFolder(parentFolder))
@@ -446,6 +474,7 @@ namespace rd.BTUtility // ---------- rd'
             }
         }
 
+        // check unchanged
         private void ValidateMaterialReplacement(GameObject duplicateObject, Dictionary<Material, Material> materialMap)
         {
             List<string> unchangedMaterialsInfo = new List<string>();
@@ -478,6 +507,29 @@ namespace rd.BTUtility // ---------- rd'
                 progressMessage = "All materials replaced successfully.";
             }
             Repaint();
+        }
+
+        // footer
+        private void DisplaySummary()
+        {
+            EditorGUILayout.Space();
+
+            // buttons
+            discordButton = new GUIContent(" Join Discord", EditorGUIUtility.IconContent("BuildSettings.Web.Small").image);
+            webButton = new GUIContent(" Open Website", EditorGUIUtility.IconContent("BuildSettings.Web.Small").image);
+            GUILayout.BeginHorizontal( GUILayout.ExpandWidth( true ) );
+			{
+                if (GUILayout.Button(discordButton, GUILayout.ExpandWidth(true)))
+                {
+                    Application.OpenURL(discordURL);
+                }
+                if (GUILayout.Button(webButton, GUILayout.ExpandWidth(true)))
+                {
+                    Application.OpenURL(webURL);
+                }
+            }
+            GUILayout.EndHorizontal();
+            // -=-=
         }
     }
 }

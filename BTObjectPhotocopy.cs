@@ -516,7 +516,7 @@ namespace rd.BTUtility
 
             // buttons
             discordButton = new GUIContent(" Join Discord", EditorGUIUtility.IconContent("BuildSettings.Web.Small").image);
-            webButton = new GUIContent(" Open Website", EditorGUIUtility.IconContent("BuildSettings.Web.Small").image);
+            webButton = new GUIContent(" Visit Website", EditorGUIUtility.IconContent("BuildSettings.Web.Small").image);
             GUILayout.BeginHorizontal( GUILayout.ExpandWidth( true ) );
 			{
                 if (GUILayout.Button(discordButton, GUILayout.ExpandWidth(true)))

@@ -2,7 +2,7 @@
 A repository for various of my Unity Scripts. Simply for archive/portfolio purposes. Many of my items will have obscured information for my privacy or depending on completion, so you're welcome to interpret the code and use it privately as you wish.
 
 
-**BTUtility**
+**BTUtility (BTPolyCounter)**
 - Utility designed for optimization processes (extremely useful for content creation onto platforms such as VRChat, Resonite or ChilloutVR)
  - Creates a window which shows extra details about the selected item (heirarchy or project files). It will access the item's meshed objects and skinned meshes, aswell as any nested objects (if in heirarchy) and add them as rows. Then, there are columns that count triangles (polygons), materials, textures and blendshapes if applicable. Finally, it will show the total size of the object after crunch compression (estimated calculation)
 - The utility will also count totals for the selected item, for example, if a VRChat avatar is selected, it will display the total polygons, materials, textures, blendshapes and texture memory size. If an item is clicked it will select it in the heirarchy for quick navigation.

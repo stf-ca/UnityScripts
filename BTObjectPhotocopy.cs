@@ -416,7 +416,7 @@ namespace rd.BTUtility
                 }
             }
 
-            foreach (var property in properties)
+            foreach (var property in properties) // add property
             {
                 if (property.CanWrite && property.CanRead && property.Name != "name")
                 {
